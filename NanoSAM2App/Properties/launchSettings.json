@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "NanoSAM2App (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "NanoSAM2App (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

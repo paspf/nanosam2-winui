@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="NanoSAM2App.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:NanoSAM2App"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+        <Page.Resources>
+            <SolidColorBrush x:Key="CanvasBrush" Color="#F3F5F2" />
+            <SolidColorBrush x:Key="InkBrush" Color="#18231E" />
+            <SolidColorBrush x:Key="MutedBrush" Color="#69776F" />
+            <SolidColorBrush x:Key="LineBrush" Color="#DCE3DD" />
+            <SolidColorBrush x:Key="AccentBrush" Color="#187A59" />
+            <SolidColorBrush x:Key="StageBrush" Color="#111A16" />
+            <Style x:Key="SectionLabelStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+                <Setter Property="CharacterSpacing" Value="0" />
+            </Style>
+        </Page.Resources>
+    <Grid Background="{StaticResource CanvasBrush}">
+        <Grid x:Name="SetupScreen">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="64" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1">
+                <Grid Margin="28,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
+                        <Border Width="32" Height="32" CornerRadius="7" Background="{StaticResource AccentBrush}">
+                            <FontIcon Glyph="&#xE8B9;" FontSize="17" Foreground="White" />
+                        </Border>
+                        <TextBlock Text="NanoSAM2" FontSize="17" FontWeight="SemiBold" Foreground="{StaticResource InkBrush}" />
+                        <Border Margin="2,0,0,0" Padding="8,4" CornerRadius="4" Background="#E7F2EC">
+                            <TextBlock Text="LOCAL VIDEO SEGMENTATION" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
+                        </Border>
+                    </StackPanel>
+                    <TextBlock x:Name="SetupStatus" Text="READY TO CONFIGURE" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                </Grid>
+            </Border>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <Grid MaxWidth="1120" Margin="32,28,32,32" HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Margin="0,0,0,26" Spacing="8">
+                        <TextBlock Text="Start a session" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource InkBrush}" />
+                    </StackPanel>
+
+                    <Grid Grid.Row="1" ColumnSpacing="36">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.1*" />
+                            <ColumnDefinition Width="0.9*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Spacing="25">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="MODEL BUNDLE" Style="{StaticResource SectionLabelStyle}" />
+                                <Grid ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="ModelPathBox" PlaceholderText="Select the folder containing the exported ONNX models" VerticalContentAlignment="Center" />
+                                    <Button Grid.Column="1" Click="BrowseModelFolder_Click" ToolTipService.ToolTip="Browse for model folder" AutomationProperties.Name="Browse for model folder">
+                                        <FontIcon Glyph="&#xE8B7;" />
+                                    </Button>
+                                </Grid>
+                                <TextBlock x:Name="ModelBundleStatus" Text="Expected: image encoder, SAM heads, memory encoder, memory attention, and constants." TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource MutedBrush}" />
+                                <ItemsControl x:Name="ModelFilesList">
+                                    <ItemsControl.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" FontSize="12" /></DataTemplate></ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="VIDEO SOURCE" Style="{StaticResource SectionLabelStyle}" />
+                                <StackPanel Orientation="Horizontal" Spacing="18">
+                                    <RadioButton x:Name="VideoModeRadio" Content="Video file" GroupName="SourceMode" IsChecked="True" Checked="SourceMode_Checked" />
+                                    <RadioButton x:Name="CameraModeRadio" Content="Webcam" GroupName="SourceMode" Checked="SourceMode_Checked" />
+                                </StackPanel>
+                                <Grid x:Name="VideoPickerRow" ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="VideoPathBox" PlaceholderText="Choose a video file" VerticalContentAlignment="Center" />
+                                    <Button Grid.Column="1" Click="BrowseVideo_Click" ToolTipService.ToolTip="Browse for video" AutomationProperties.Name="Browse for video">
+                                        <FontIcon Glyph="&#xE8B7;" />
+                                    </Button>
+                                </Grid>
+                                <StackPanel x:Name="CameraPickerRow" Visibility="Collapsed" Spacing="6">
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ComboBox x:Name="CameraCombo" PlaceholderText="Select a camera" DisplayMemberPath="Name" SelectionChanged="CameraCombo_SelectionChanged" HorizontalAlignment="Stretch" />
+                                        <Button x:Name="RefreshCamerasButton" Grid.Column="1" Click="RefreshCameras_Click" ToolTipService.ToolTip="Refresh webcams" AutomationProperties.Name="Refresh webcams">
+                                            <FontIcon Glyph="&#xE72C;" />
+                                        </Button>
+                                    </Grid>
+                                    <TextBlock x:Name="CameraStatus" Text="Camera access is requested when you start the session." FontSize="12" Foreground="{StaticResource MutedBrush}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Spacing="25">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="HARDWARE ACCELERATION" Style="{StaticResource SectionLabelStyle}" />
+                                <TextBlock Text="IMAGE ENCODER" Margin="0,10,0,0" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource InkBrush}" />
+                                <ComboBox x:Name="EncoderHardwareCombo" DisplayMemberPath="Label" HorizontalAlignment="Stretch" />
+                                <TextBlock Text="SAM HEADS + MEMORY" Margin="0,8,0,0" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource InkBrush}" />
+                                <ComboBox x:Name="TrackingHardwareCombo" DisplayMemberPath="Label" HorizontalAlignment="Stretch" />
+                                <CheckBox x:Name="DirectMlOptimizationsCheckBox" IsChecked="False" Visibility="Collapsed"
+                                          AutomationProperties.Name="Enable DirectML graph optimizations"
+                                          ToolTipService.ToolTip="Applies to both DirectML hardware selections. Enables graph optimizations. Not recommended on Intel Graphics.">
+                                    <TextBlock Text="Enable DirectML graph optimizations" TextWrapping="Wrap" />
+                                </CheckBox>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button Click="RefreshHardware_Click" ToolTipService.ToolTip="Refresh hardware list" AutomationProperties.Name="Refresh hardware list"><FontIcon Glyph="&#xE72C;" /></Button>
+                                    <Button Content="Install providers" Click="DownloadProviders_Click" />
+                                </StackPanel>
+                                <TextBlock x:Name="HardwareStatus" Text="Checking Windows ML execution providers..." TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource MutedBrush}" />
+                            </StackPanel>
+
+                            <Border BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Padding="0,18,0,0">
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="PRIVACY" Style="{StaticResource SectionLabelStyle}" />
+                                    <TextBlock Text="Models stay on this device. Optional hardware providers may need a one-time download before the first run." TextWrapping="Wrap" FontSize="13" Foreground="{StaticResource MutedBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="2" Margin="0,30,0,0" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="SetupError" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="#A33B2E" />
+                        <Button Grid.Column="1" Content="Next" Click="Next_Click" Padding="22,10" Background="{StaticResource AccentBrush}" Foreground="White" FontWeight="SemiBold">
+                            <Button.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="Enter" />
+                            </Button.KeyboardAccelerators>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+
+        <Grid x:Name="LiveScreen" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="292" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,1,0">
+                <Grid Margin="20,18">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Button x:Name="SessionSetupButton" Grid.Row="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Click="BackToSetup_Click" Padding="12,8" MinHeight="40" Background="Transparent" BorderBrush="#9A9A9A" BorderThickness="1" CornerRadius="4" ToolTipService.ToolTip="End the current session and return to setup" AutomationProperties.Name="Session setup">
+                        <Button.Resources>
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#F2F2F2" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#E5E5E5" />
+                            <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="#666666" />
+                            <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="#444444" />
+                        </Button.Resources>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE72B;" FontSize="14" Foreground="#505050" />
+                            <TextBlock Text="Session setup" FontWeight="SemiBold" Foreground="#303030" />
+                        </StackPanel>
+                    </Button>
+                    <StackPanel Grid.Row="1" Margin="0,24,0,18" Spacing="4">
+                        <TextBlock Text="LIVE SESSION" Style="{StaticResource SectionLabelStyle}" />
+                        <TextBlock x:Name="LiveSourceName" Text="No source" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource InkBrush}" TextTrimming="CharacterEllipsis" />
+                        <TextBlock x:Name="LiveHardwareText" FontSize="11" TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" />
+                    </StackPanel>
+                    <Border Grid.Row="2" Background="#EAF3EE" CornerRadius="6" Padding="12,10">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="INFERENCE FPS" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                                <TextBlock x:Name="FpsText" Text="0.0" FontSize="26" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
+                            </StackPanel>
+                            <TextBlock x:Name="RuntimeStateText" Text="READY" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
+                        </Grid>
+                    </Border>
+                    <Grid Grid.Row="3" Margin="0,22,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <TextBlock Text="OBJECTS" Style="{StaticResource SectionLabelStyle}" VerticalAlignment="Center" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="6">
+                                <Button x:Name="NewObjectButton" Click="NewObject_Click" ToolTipService.ToolTip="New point-prompted object" AutomationProperties.Name="New object"><FontIcon Glyph="&#xE710;" /></Button>
+                                <Button x:Name="ResetButton" Click="ResetObjects_Click" ToolTipService.ToolTip="Remove all objects and reset tracking" AutomationProperties.Name="Reset tracking"><FontIcon Glyph="&#xE74D;" /></Button>
+                            </StackPanel>
+                        </Grid>
+                        <ListView x:Name="ObjectList" Grid.Row="2" SelectionMode="Single" BorderThickness="0" Padding="0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="local:TrackedPrompt">
+                                    <Grid Padding="8,7" ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="8" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="8" Height="8" CornerRadius="4" Background="{Binding Color}" VerticalAlignment="Center" />
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource InkBrush}" />
+                                            <TextBlock Text="{Binding Detail}" FontSize="11" Foreground="{StaticResource MutedBrush}" />
+                                        </StackPanel>
+                                        <Button Grid.Column="2" Tag="{Binding}" Click="RemoveObject_Click" ToolTipService.ToolTip="Delete object" AutomationProperties.Name="{Binding DeleteLabel}">
+                                            <FontIcon Glyph="&#xE74D;" FontSize="13" />
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                    <StackPanel Grid.Row="4" Margin="0,16,0,0" Spacing="9">
+                        <TextBlock Text="PROMPT TOOL" Style="{StaticResource SectionLabelStyle}" />
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <ToggleButton x:Name="BoxTool" Width="44" Height="36" IsChecked="True" Click="PromptTool_Click" ToolTipService.ToolTip="Box prompt" AutomationProperties.Name="Box prompt"><FontIcon Glyph="&#xE739;" /></ToggleButton>
+                            <ToggleButton x:Name="PositiveTool" Width="44" Height="36" Click="PromptTool_Click" ToolTipService.ToolTip="Positive point" AutomationProperties.Name="Positive point"><FontIcon Glyph="&#xE710;" /></ToggleButton>
+                            <ToggleButton x:Name="NegativeTool" Width="44" Height="36" Click="PromptTool_Click" ToolTipService.ToolTip="Negative point" AutomationProperties.Name="Negative point"><FontIcon Glyph="&#xE738;" /></ToggleButton>
+                        </StackPanel>
+                        <TextBlock x:Name="LiveError" TextWrapping="Wrap" FontSize="11" Foreground="#A33B2E" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="1" Background="{StaticResource StageBrush}" Padding="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0,0,0,12">
+                    <TextBlock Text="ANNOTATION CANVAS" FontSize="11" FontWeight="SemiBold" Foreground="#AAB9B0" VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                        <Button x:Name="PlayPauseButton" Click="PlayPause_Click" ToolTipService.ToolTip="Play or pause video" AutomationProperties.Name="Play or pause video">
+                            <FontIcon x:Name="PlayPauseIcon" Glyph="&#xE768;" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="1" Background="#0B100D">
+                    <Image x:Name="CameraPreview" Stretch="Uniform" Visibility="Collapsed" />
+                    <StackPanel x:Name="EmptyPreview" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+                        <FontIcon Glyph="&#xE714;" FontSize="32" Foreground="#718077" HorizontalAlignment="Center" />
+                        <TextBlock Text="Waiting for a video source" FontSize="16" Foreground="#C3CEC7" HorizontalAlignment="Center" />
+                    </StackPanel>
+                    <Canvas x:Name="PromptCanvas" Background="Transparent" PointerPressed="PromptCanvas_PointerPressed" PointerMoved="PromptCanvas_PointerMoved" PointerReleased="PromptCanvas_PointerReleased" PointerCanceled="PromptCanvas_PointerCanceled" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+ </Page>

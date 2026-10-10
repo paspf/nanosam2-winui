@@ -1,0 +1,64 @@
+# .NET build and publish output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+publish/
+
+# Local editor and user settings
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+_ReSharper*/
+
+# Logs and test output
+*.log
+*.binlog
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+*.dotCover
+
+# NuGet packages and generated restore files
+packages/
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+project.lock.json
+
+# MSIX packaging output and local signing keys
+AppPackages/
+BundleArtifacts/
+*.msix
+*.msixbundle
+*.msixupload
+*.appx
+*.appxbundle
+*.appxupload
+*.pfx
+*.p12
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Generated tooling files
+Generated\ Files/
+*_wpftmp.csproj
+
+# Operating system files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Smoke Tests
+NanoSAM2App.SmokeTests/
+
