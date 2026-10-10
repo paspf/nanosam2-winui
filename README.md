@@ -69,7 +69,8 @@ Select a folder containing exactly one exported model family. Required files are
 
 Keep every companion `.onnx.data` file alongside its ONNX file. The app prefers the highest numeric opset when multiple exports exist. A legacy mask-decoder-only bundle is not sufficient.
 
-Export the full SAM heads and memory-attention model with the `rope_k_mask` input, for example, from the sibling `nanosam2` directory:
+Export the full SAM heads and memory-attention model with the `rope_k_mask` input, for example, from the sibling [Nanosam2](https://github.com/paspf/nanosam2) repository. The export with ResNet50 backend and 512px is strongly recommended.
+
 ```powershell
 python tools/onnx_export.py --encoder_type resnet18-512 --checkpoint weights/nanosam2-resnet18-sa1-v01.pth --export all --output_path onnx_export_resnet_512 --opset 24
 ```
