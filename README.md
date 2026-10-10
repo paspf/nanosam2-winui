@@ -1,6 +1,8 @@
 # NanoSAM2 WinUI
 
-A native C# / WinUI 3 application for local NanoSAM2 video segmentation using a C# port of the Nanosam2 ONNX Camera Predictor. Inference uses the Windows ML runtime distributed with the Windows App SDK, with `Microsoft.ML.OnnxRuntime` sessions and `Microsoft.Windows.AI.MachineLearning.ExecutionProviderCatalog`. It does not use the legacy `Windows.AI.MachineLearning` API or require Python at runtime.
+A native C# / WinUI 3 application for local [Nanosam2](https://github.com/paspf/nanosam2) video segmentation using a C# port of the Nanosam2 ONNX Camera Predictor. Inference uses the Windows ML runtime distributed with the Windows App SDK, with `Microsoft.ML.OnnxRuntime` sessions and `Microsoft.Windows.AI.MachineLearning.ExecutionProviderCatalog`. It does not use the legacy `Windows.AI.MachineLearning` API or require Python at runtime.
+
+![Screenshot of the application](doc/blobs/app-screenshot-bedroom.png)
 
 ## Build And Run
 
